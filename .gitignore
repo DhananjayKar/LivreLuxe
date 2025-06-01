@@ -10,4 +10,4 @@ yarn-error.log*
 
 # Firebase emulators/local
 firebase-debug.log
-firestore-debug.log
+firestore-debug.logBack-End/config/firebase-service-account.json
