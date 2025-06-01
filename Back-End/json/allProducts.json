@@ -1,0 +1,548 @@
+[
+  {
+    "id": "aa1",
+    "name": "NCERT Solutions Physics",
+    "author": "MTG",
+    "category": "Academic & Activity",
+    "image": "/images/aa1.jpeg",
+    "newPrice": "241",
+    "oldPrice": "299"
+  },
+  {
+    "id": "aa2",
+    "name": "NCERT Solutions Biology",
+    "author": "Arihant",
+    "category": "Academic & Activity",
+    "image": "/images/aa2.jpeg",
+    "newPrice": "256",
+    "oldPrice": "310"
+  },
+  {
+    "id": "aa3",
+    "name": "CBSE Question Bank Class 10 Mathematics",
+    "author": "Oswaal Books",
+    "category": "Academic & Activity",
+    "image": "/images/aa3.jpeg",
+    "newPrice": "350",
+    "oldPrice": "389"
+  },
+  {
+    "id": "aa4",
+    "name": "CBSE Question Bank Class 12 Chemistry",
+    "author": "Oswaal Books",
+    "category": "Academic & Activity",
+    "image": "/images/aa4.jpeg",
+    "newPrice": "365",
+    "oldPrice": "380"
+  },
+  {
+    "id": "aa5",
+    "name": "Brain Boosting Age Group 4+",
+    "author": "Dreamland",
+    "category": "Academic & Activity",
+    "image": "/images/aa5.jpeg",
+    "newPrice": "214",
+    "oldPrice": "270"
+  },
+  {
+    "id": "aa6",
+    "name": "The Brain Fitness Book",
+    "author": "Rita Carter",
+    "category": "Academic & Activity",
+    "image": "/images/aa6.jpeg",
+    "newPrice": "244",
+    "oldPrice": "277"
+  },
+  {
+    "id": "aa7",
+    "name": "101 Science Experiments",
+    "author": "Om Publishers",
+    "category": "Academic & Activity",
+    "image": "/images/aa7.jpeg",
+    "newPrice": "220",
+    "oldPrice": "297"
+  },
+  {
+    "id": "aa8",
+    "name": "My Book of Art and Craft Activity Book 1",
+    "author": "Dreamlook",
+    "category": "Academic & Activity",
+    "image": "/images/aa8.jpeg",
+    "newPrice": "180",
+    "oldPrice": "230"
+  },
+  {
+    "id": "ff1",
+    "name": "Fourth Wing",
+    "author": "Rebecca Yarros",
+    "category": "Fantasy & Fiction",
+    "image": "/images/ff1.jpeg",
+    "newPrice": "345",
+    "oldPrice": "467"
+  },
+  {
+    "id": "ff2",
+    "name": "A Court of Throns and Roses",
+    "author": "Sarah J. Maas",
+    "category": "Fantasy & Fiction",
+    "image": "/images/ff2.jpeg",
+    "newPrice": "336",
+    "oldPrice": "380"
+  },
+  {
+    "id": "ff3",
+    "name": "The Atlas Six",
+    "author": "Olivie Blake",
+    "category": "Fantasy & Fiction",
+    "image": "/images/ff3.jpeg",
+    "newPrice": "221",
+    "oldPrice": "270"
+  },
+  {
+    "id": "ff4",
+    "name": "The Starless Sea",
+    "author": "SeaErin Morgenstern",
+    "category": "Fantasy & Fiction",
+    "image": "/images/ff4.jpeg",
+    "newPrice": "270",
+    "oldPrice": "330"
+  },
+  {
+    "id": "ff5",
+    "name": "The Invisible Life of Addie Larue",
+    "author": "V. E. Schwab",
+    "category": "Fantasy & Fiction",
+    "image": "/images/ff5.jpeg",
+    "newPrice": "310",
+    "oldPrice": "358"
+  },
+  {
+    "id": "ff6",
+    "name": "The Bone Season",
+    "author": "Samantha Shannon",
+    "category": "Fantasy & Fiction",
+    "image": "/images/ff6.jpeg",
+    "newPrice": "350",
+    "oldPrice": "380"
+  },
+  {
+    "id": "ff7",
+    "name": "Children of Blood and Bone",
+    "author": "Tomi Adeyemi",
+    "category": "Fantasy & Fiction",
+    "image": "/images/ff7.jpeg",
+    "newPrice": "290",
+    "oldPrice": "340"
+  },
+  {
+    "id": "ff8",
+    "name": "The Poppy War",
+    "author": "R. F. Kuang",
+    "category": "Fantasy & Fiction",
+    "image": "/images/ff8.jpeg",
+    "newPrice": "280",
+    "oldPrice": "300"
+  },
+  {
+    "id": "set1",
+    "name": "Ram Chandra Series",
+    "author": "Amish",
+    "category": "Box-Set",
+    "image": "/images/set1.jpg",
+    "newPrice": "760",
+    "oldPrice": "990"
+  },
+  {
+    "id": "set2",
+    "name": "Heroes of Olympus",
+    "author": "Rick Riordan",
+    "category": "Box-Set",
+    "image": "/images/set2.jpeg",
+    "newPrice": "665",
+    "oldPrice": "870"
+  },
+  {
+    "id": "set3",
+    "name": "Unusual tales from Indian Mythology",
+    "author": "Sudha Murty",
+    "category": "Box-Set",
+    "image": "/images/set3.jpeg",
+    "newPrice": "750",
+    "oldPrice": "800"
+  },
+  {
+    "id": "set4",
+    "name": "The Hidden Hindu",
+    "author": "Akshat Gupta",
+    "category": "Box-Set",
+    "image": "/images/set4.jpeg",
+    "newPrice": "890",
+    "oldPrice": "950"
+  },
+  {
+    "id": "set5",
+    "name": "The Best of Sherlock Holmes",
+    "author": "Arthur Conan Doyle",
+    "category": "Box-Set",
+    "image": "/images/set5.jpeg",
+    "newPrice": "550",
+    "oldPrice": "610"
+  },
+  {
+    "id": "set6",
+    "name": "The Kalki Trilogy",
+    "author": "Kevin Missal",
+    "category": "Box-Set",
+    "image": "/images/set6.jpeg",
+    "newPrice": "800",
+    "oldPrice": "990"
+  },
+  {
+    "id": "set7",
+    "name": "World's Greatest Books on Public Speaking",
+    "author": "Dale Carnegie",
+    "category": "Box-Set",
+    "image": "/images/set7.jpeg",
+    "newPrice": "500",
+    "oldPrice": "750"
+  },
+  {
+    "id": "set8",
+    "name": "The Shiva Trilogy",
+    "author": "Amish",
+    "category": "Box-Set",
+    "image": "/images/set8.jpeg",
+    "newPrice": "690",
+    "oldPrice": "750"
+  },
+  {
+    "id": "mm1",
+    "name": "The 7 Habits of Highly Effective People",
+    "author": "Stephen R. Covey",
+    "category": "Moral & Motivation",
+    "image": "/images/mm1.jpg",
+    "newPrice": "320",
+    "oldPrice": "386"
+  },
+  {
+    "id": "mm2",
+    "name": "Atomic Habits",
+    "author": "James Clear",
+    "category": "Moral & Motivation",
+    "image": "/images/mm2.jpg",
+    "newPrice": "220",
+    "oldPrice": "259"
+  },
+  {
+    "id": "mm3",
+    "name": "Think like a Monk",
+    "author": "Jay Shetty",
+    "category": "Moral & Motivation",
+    "image": "/images/mm3.jpg",
+    "newPrice": "190",
+    "oldPrice": "230"
+  },
+  {
+    "id": "mm4",
+    "name": "Man's Search for Meaning",
+    "author": "Viktore E. Frankl",
+    "category": "Moral & Motivation",
+    "image": "/images/mm4.jpg",
+    "newPrice": "311",
+    "oldPrice": "349"
+  },
+  {
+    "id": "mm5",
+    "name": "The Power of Now ",
+    "author": "Eckhart Tolle",
+    "category": "Moral & Motivation",
+    "image": "/images/mm5.jpg",
+    "newPrice": "320",
+    "oldPrice": "356"
+  },
+  {
+    "id": "mm6",
+    "name": "You Can Win",
+    "author": "Shiv Khera",
+    "category": "Moral & Motivation",
+    "image": "/images/mm6.jpg",
+    "newPrice": "210",
+    "oldPrice": "270"
+  },
+  {
+    "id": "mm7",
+    "name": "The Alchemist",
+    "author": "Paulo Coelho",
+    "category": "Moral & Motivation",
+    "image": "/images/mm7.jpg",
+    "newPrice": "360",
+    "oldPrice": "390"
+  },
+  {
+    "id": "mm8",
+    "name": "Wings of Fire",
+    "author": "A. P. J. Abdul Kalam",
+    "category": "Moral & Motivation",
+    "image": "/images/mm8.jpg",
+    "newPrice": "120",
+    "oldPrice": "200"
+  },
+  {
+    "id": "best1",
+    "name": "The Psychology of Money",
+    "author": "Morgan Housel",
+    "category": "Best Seller",
+    "image": "/images/best1.jpg",
+    "newPrice": "241",
+    "oldPrice": "999"
+  },
+  {
+    "id": "best2",
+    "name": "Atomic Habits",
+    "author": "James Clear",
+    "category": "Best Seller",
+    "image": "/images/best2.jpg",
+    "newPrice": "491",
+    "oldPrice": "899"
+  },
+  {
+    "id": "best3",
+    "name": "It Ends with Us",
+    "author": "Colleen Hoover",
+    "category": "Best Seller",
+    "image": "/images/best3.jpg",
+    "newPrice": "301",
+    "oldPrice": "1299"
+  },
+  {
+    "id": "best4",
+    "name": "IKIGAI",
+    "author": "Héctor García and Francesc Miralles",
+    "category": "Best Seller",
+    "image": "/images/best4.jpg",
+    "newPrice": "354",
+    "oldPrice": "550"
+  },
+  {
+    "id": "best5",
+    "name": "Treasure Island",
+    "author": "Robert Louis Stevenson",
+    "category": "Best Seller",
+    "image": "/images/best5.jpg",
+    "newPrice": "134",
+    "oldPrice": "195"
+  },
+  {
+    "id": "best6",
+    "name": "On the Origin of Time",
+    "author": "Thomas Hertog",
+    "category": "Best Seller",
+    "image": "/images/best6.jpg",
+    "newPrice": "603",
+    "oldPrice": "799"
+  },
+  {
+    "id": "child1",
+    "name": "The Three Little Pigs",
+    "author": "",
+    "category": "Children",
+    "image": "/images/child1.jpg",
+    "newPrice": "99",
+    "oldPrice": "120"
+  },
+  {
+    "id": "child2",
+    "name": "Holes",
+    "author": "Louis Sachar",
+    "category": "Children",
+    "image": "/images/child2.jpg",
+    "newPrice": "425",
+    "oldPrice": "899"
+  },
+  {
+    "id": "child3",
+    "name": "Harry Potter and the Chambers of Secrets",
+    "author": "J. K. Rowling",
+    "category": "Children",
+    "image": "/images/child3.jpg",
+    "newPrice": "359",
+    "oldPrice": "499"
+  },
+  {
+    "id": "child4",
+    "name": "The Jungle Book",
+    "author": "Rudyard Kipling",
+    "category": "Children",
+    "image": "/images/child4.jpg",
+    "newPrice": "219",
+    "oldPrice": "299"
+  },
+  {
+    "id": "child5",
+    "name": "The Wild Robot",
+    "author": "Peter Brown",
+    "category": "Children",
+    "image": "/images/child5.jpg",
+    "newPrice": "257",
+    "oldPrice": "499"
+  },
+  {
+    "id": "child6",
+    "name": "Fantastic Mr. Fox",
+    "author": "Roald Dahl",
+    "category": "Children",
+    "image": "/images/child6.jpg",
+    "newPrice": "230",
+    "oldPrice": "399"
+  },
+  {
+    "id": "nf1",
+    "name": "Dance of the Furies",
+    "author": "Michael S. Neiberg",
+    "category": "Non-Fiction",
+    "image": "/images/nf1.jpg",
+    "newPrice": "2321",
+    "oldPrice": "2391"
+  },
+  {
+    "id": "nf2",
+    "name": "Journalism and Political exclusion",
+    "author": "Debra Clark",
+    "category": "Non-Fiction",
+    "image": "/images/nf2.jpg",
+    "newPrice": "2670",
+    "oldPrice": "2771"
+  },
+  {
+    "id": "nf3",
+    "name": "The Corporation that changed the World",
+    "author": "Nick Robins",
+    "category": "Non-Fiction",
+    "image": "/images/nf3.jpg",
+    "newPrice": "1337",
+    "oldPrice": "1578"
+  },
+  {
+    "id": "nf4",
+    "name": "The Early Years",
+    "author": "Gabriel García Márquez",
+    "category": "Non-Fiction",
+    "image": "/images/nf4.jpg",
+    "newPrice": "2800",
+    "oldPrice": "2999"
+  },
+  {
+    "id": "nf5",
+    "name": "The Art of War",
+    "author": "Sun Tzu",
+    "category": "Non-Fiction",
+    "image": "/images/nf5.jpg",
+    "newPrice": "121",
+    "oldPrice": "150"
+  },
+  {
+    "id": "nf6",
+    "name": "Everything is F*cked",
+    "author": "Mark Manson",
+    "category": "Non-Fiction",
+    "image": "/images/nf6.jpg",
+    "newPrice": "271",
+    "oldPrice": "343"
+  },
+  {
+    "id": "s9",
+    "name": "Luxor Highlighter",
+    "category": "Stationary",
+    "image": "/images/s9.jpeg",
+    "newPrice": "225",
+    "oldPrice": "300"
+  },
+  {
+    "id": "s8",
+    "name": "Faber-Castell 24 Grip Erasable Crayons",
+    "category": "Stationary",
+    "image": "/images/s8.jpeg",
+    "newPrice": "190",
+    "oldPrice": "220"
+  },
+  {
+    "id": "s7",
+    "name": "DDNS Waterproof Bag",
+    "category": "Stationary",
+    "image": "/images/s7.jpeg",
+    "newPrice": "450",
+    "oldPrice": "600"
+  },
+  {
+    "id": "s6",
+    "name": "Magic Unicorn Water Bottle/Sipper",
+    "category": "Stationary",
+    "image": "/images/s6.jpeg",
+    "newPrice": "170",
+    "oldPrice": "200"
+  },
+  {
+    "id": "s5",
+    "name": "Galaxy Pencile Case",
+    "category": "Stationary",
+    "image": "/images/s5.jpeg",
+    "newPrice": "160",
+    "oldPrice": "250"
+  },
+  {
+    "id": "s4",
+    "name": "H4 Dark Graphite Pencil Set",
+    "category": "Stationary",
+    "image": "/images/s4.jpeg",
+    "newPrice": "60",
+    "oldPrice": "126"
+  },
+  {
+    "id": "s3",
+    "name": "Water Paint Brushes Set of 10",
+    "category": "Stationary",
+    "image": "/images/s3.jpeg",
+    "newPrice": "180",
+    "oldPrice": "300"
+  },
+  {
+    "id": "s2",
+    "name": "Notebooks - Set of 6 Notebooks",
+    "category": "Stationary",
+    "image": "/images/s2.jpeg",
+    "newPrice": "180",
+    "oldPrice": "300"
+  },
+  {
+    "id": "s12",
+    "name": "3-in-1 Pen Set: Ballpoint, Gel, Fountain",
+    "category": "Stationary",
+    "image": "/images/s12.png",
+    "newPrice": "150",
+    "oldPrice": "264"
+  },
+  {
+    "id": "s11",
+    "name": "Stick/Strip Files",
+    "category": "Stationary",
+    "image": "/images/s11.jpeg",
+    "newPrice": "15",
+    "oldPrice": "25"
+  },
+  {
+    "id": "s10",
+    "name": "Fevicol - Set of 10",
+    "category": "Stationary",
+    "image": "/images/s10.jpeg",
+    "newPrice": "180",
+    "oldPrice": "299"
+  },
+  {
+    "id": "s1",
+    "name": "Scissors",
+    "category": "Stationary",
+    "image": "/images/s1.png",
+    "newPrice": "50",
+    "oldPrice": "100"
+  }
+]
