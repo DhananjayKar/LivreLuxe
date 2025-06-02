@@ -3,34 +3,39 @@ import { useOrders } from "../Context/OrderContext";
 import { Link, useNavigate } from "react-router-dom";
 import { downloadInvoice } from "../Utils/pdfInvoice";
 
-// ⏳ Helper to compute dynamic status
 const getStatusFromDate = (orderDate) => {
   const orderDay = new Date(orderDate);
   const today = new Date();
   const diffTime = today - orderDay;
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
   if (diffDays >= 5) return "DELIVERED";
   if (diffDays >= 2) return "SHIPPED";
   return "PENDING";
 };
 
 const Orders = () => {
-  const { orders, fetchOrders } = useOrders();
+  const { orders, loadingOrders, authReady } = useOrders();
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchOrders(); // Load orders from backend
-  }, []);
-
-  useEffect(() => {
-    if (orders.length === 0) {
+    if (authReady && !loadingOrders && orders.length === 0) {
       const timeout = setTimeout(() => {
         navigate("/no-orders", { replace: true });
       }, 100);
       return () => clearTimeout(timeout);
     }
-  }, [orders, navigate]);
+  }, [orders, loadingOrders, authReady, navigate]);
+
+  if (!authReady || loadingOrders) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+          <div className="text-center space-y-3">
+            <div className="w-16 h-16 border-[6px] border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xl font-semibold text-gray-700">Loading your orders...</p>
+          </div>
+        </div>
+    );
+  }
 
   if (orders.length === 0) return null;
 

@@ -1,39 +1,44 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { auth } from  "../Pages/Authentic/firebaseConfig";
+import { auth } from "../Pages/Authentic/firebaseConfig";
 
 const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [authReady, setAuthReady] = useState(false); // ✅ NEW
 
-  const fetchOrders = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-  
-    const token = await user.getIdToken();
-  
+  const fetchOrders = async (user) => {
     try {
+      const token = await user.getIdToken();
       const res = await fetch("http://localhost:5000/api/orders", {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
-  
+
       const data = await res.json();
-  
-      if (Array.isArray(data)) {
-        setOrders(data);
-      } else {
-        console.error("Unexpected response from /api/orders:", data);
-        setOrders([]); // fallback to avoid crashes
-      }
+      setOrders(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Failed to fetch orders:", err.message);
+      setOrders([]);
+    } finally {
+      setLoadingOrders(false);
     }
   };
 
   useEffect(() => {
-    fetchOrders();
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      setAuthReady(true); // ✅ Firebase is initialized (even if no user)
+      if (user) {
+        await fetchOrders(user);
+      } else {
+        setOrders([]);
+        setLoadingOrders(false);
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const placeOrder = async (order) => {
@@ -46,9 +51,9 @@ export const OrderProvider = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(order)
+        body: JSON.stringify(order),
       });
 
       const saved = await res.json();
@@ -59,7 +64,9 @@ export const OrderProvider = ({ children }) => {
   };
 
   return (
-    <OrderContext.Provider value={{ orders, placeOrder, fetchOrders }}>
+    <OrderContext.Provider
+      value={{ orders, placeOrder, fetchOrders, loadingOrders, authReady }}
+    >
       {children}
     </OrderContext.Provider>
   );

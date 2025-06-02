@@ -42,9 +42,12 @@ const SingleBook = () => {
 
   if (!currentProduct) {
     return (
-      <div className="flex flex-col items-center justify-center">
-        <h1 className="text-2xl font-bold mb-4">Loading...</h1>
-      </div>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center space-y-3">
+    <div className="w-16 h-16 border-[6px] border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+    <p className="text-xl font-semibold text-gray-700">Loading ...</p>
+  </div>
+</div>
     );
   }
 
