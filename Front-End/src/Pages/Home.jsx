@@ -44,6 +44,7 @@ export default function Home() {
     const fetchProducts = async () => {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
       const data = await res.json();
+      console.log(data);
       setProducts(data);
     };
     fetchProducts();
