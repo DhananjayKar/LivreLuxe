@@ -31,7 +31,7 @@ const AuthPage = () => {
     if (user) {
       const token = await user.getIdToken();
 
-      await fetch("http://localhost:5000/api/auth", {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/auth`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -6,12 +6,12 @@ const OrderContext = createContext();
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
-  const [authReady, setAuthReady] = useState(false); // ✅ NEW
+  const [authReady, setAuthReady] = useState(false);
 
   const fetchOrders = async (user) => {
     try {
       const token = await user.getIdToken();
-      const res = await fetch("http://localhost:5000/api/orders", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -29,7 +29,7 @@ export const OrderProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      setAuthReady(true); // ✅ Firebase is initialized (even if no user)
+      setAuthReady(true);
       if (user) {
         await fetchOrders(user);
       } else {
@@ -47,7 +47,7 @@ export const OrderProvider = ({ children }) => {
     const token = await user.getIdToken();
 
     try {
-      const res = await fetch("http://localhost:5000/api/orders", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

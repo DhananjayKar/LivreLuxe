@@ -14,7 +14,7 @@ export const CartProvider = ({ children }) => {
     const token = await user.getIdToken();
 
     try {
-      const res = await fetch("http://localhost:5000/api/cart", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/cart`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -48,7 +48,7 @@ export const CartProvider = ({ children }) => {
     }));
 
     try {
-      await fetch("http://localhost:5000/api/cart", {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/cart`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
