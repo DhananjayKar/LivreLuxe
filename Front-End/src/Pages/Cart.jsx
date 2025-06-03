@@ -104,6 +104,7 @@ const Cart = () => {
   };
   
   if (!authChecked) {
+    toast.error("Please Log-In first!");
     return null;
   }
 
@@ -120,7 +121,6 @@ const Cart = () => {
   }
   
   if (user === null) {
-    toast.error("Please Log-In first!");
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <h1 className="text-2xl font-semibold mb-4 text-red-600">Unauthorized Access</h1>
