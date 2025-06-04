@@ -12,7 +12,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://livreluxe.onrender.com"
+  "https://livreluxe.vercel.app"
 ];
 
 app.use(cors({
