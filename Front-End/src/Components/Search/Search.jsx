@@ -6,6 +6,7 @@ const Search = () => {
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [recommendations, setRecommendations] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,9 +31,18 @@ const Search = () => {
   }, [location.pathname]);
 
   useEffect(() => {
+    if (!query.trim()) {
+      setRecommendations([]);
+      setDebouncedQuery('');
+      return;
+    }
+
+    setLoading(true);
     const timer = setTimeout(() => {
       setDebouncedQuery(query.trim().toLowerCase());
+      setLoading(false);
     }, 300);
+
     return () => clearTimeout(timer);
   }, [query]);
 
@@ -97,17 +107,25 @@ const Search = () => {
             </form>
           </div>
 
-          {recommendations.length > 0 && (
+          {(loading || recommendations.length > 0 || (debouncedQuery && !loading)) && (
             <ul className="absolute top-full left-0 w-full bg-white border z-50 rounded-b-xl shadow-md mt-1 max-h-64 overflow-y-auto">
-              {recommendations.map((book) => (
-                <li
-                  key={book.id}
-                  onClick={() => handleSelect(book)}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                >
-                  {book.name}
-                </li>
-              ))}
+              {loading && (
+                <li className="px-4 py-2 text-gray-500 italic">Searching...</li>
+              )}
+              {!loading && recommendations.length > 0 &&
+                recommendations.map((book) => (
+                  <li
+                    key={book.id}
+                    onClick={() => handleSelect(book)}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  >
+                    {book.name}
+                  </li>
+                ))
+              }
+              {!loading && debouncedQuery && recommendations.length === 0 && (
+                <li className="px-4 py-2 text-red-500 italic">No results found</li>
+              )}
             </ul>
           )}
         </div>
