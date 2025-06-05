@@ -103,10 +103,22 @@ const Cart = () => {
     navigate("/orders");
   };
   
-  if (!authChecked) {
-    toast.error("Please Log-In first!");
-    return null;
+  useEffect(() => {
+  if (authChecked && !user) {
+    toast.error("Please log in first!");
   }
+}, [authChecked, user]);
+
+if (!authChecked) {
+  return (
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="text-center space-y-3">
+        <div className="w-16 h-16 border-[6px] border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-xl font-semibold text-gray-700">Checking login status...</p>
+      </div>
+    </div>
+  );
+}
 
   if (cartItems.length === 0) {
     return (

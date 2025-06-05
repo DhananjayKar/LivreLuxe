@@ -8,6 +8,7 @@ import {
 import { auth, provider } from "./firebaseConfig";
 import "./AuthPage.css";
 import { Eye, EyeOff } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -17,6 +18,7 @@ const AuthPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [redirectTo, setRedirectTo] = useState("/");
 
   const handleToggle = () => {
     setIsLogin(!isLogin);
@@ -24,6 +26,19 @@ const AuthPage = () => {
     setEmail("");
     setUsername("");
     setPassword("");
+  };
+  
+  const getFriendlyError = (code) => {
+    switch (code) {
+      case "auth/email-already-in-use":
+        return "This email is already in use.";
+      case "auth/invalid-email":
+        return "Please enter a valid email.";
+      case "auth/wrong-password":
+        return "Incorrect password.";
+      default:
+        return "An error occurred. Please try again.";
+    }
   };
 
   const sendTokenToBackend = async (usernameOptional) => {
@@ -46,11 +61,11 @@ const AuthPage = () => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      alert("Account created!");
+      toast.success("Account created!");
       await sendTokenToBackend(username);
-      navigate("/");
+      navigate(redirectTo);
     } catch (err) {
-      setError(err.message);
+      setError(getFriendlyError(err.code));
     }
   };
 
@@ -58,24 +73,41 @@ const AuthPage = () => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful!");
+      toast.success("Login.successful!");
       await sendTokenToBackend();
-      navigate("/");
+      navigate(redirectTo);
     } catch (err) {
-      setError(err.message);
+      if (err.code === "auth/user-not-found") {
+        toast.error("This account hasn't been signed in. Sign up first.");
+      } else {
+        setError(getFriendlyError(err.code));
+      }
     }
   };
-
+  
   const handleGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      alert("Signed in with Google!");
+      const isNewUser = result._tokenResponse?.isNewUser;
+  
+      if (isNewUser) {
+        toast.error("This account hasn't been signed in. Sign up first.");
+        await auth.signOut();
+        return;
+      }
+  
+      toast.success("Signed in with Google!");
       await sendTokenToBackend(result.user.displayName);
-      navigate("/");
+      navigate(redirectTo);
     } catch (err) {
-      setError(err.message);
+      setError(getFriendlyError(err.code));
     }
   };
+  
+  useEffect(() => {
+    const redirectPath = localStorage.getItem("authRedirect") || "/";
+    setRedirectTo(redirectPath);
+  }, []);
 
   return (
     <div className="auth-wrapper">
@@ -105,14 +137,14 @@ const AuthPage = () => {
                   className="auth-input border-2 rounded"
                   placeholder="Username"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setUsername(e.target.value.trim())}
                 />
               )}
               <input
                 className="auth-input border-2 rounded"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value.trim())}
               />
               <div className="relative w-full mb-3">
                 <input

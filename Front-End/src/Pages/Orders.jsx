@@ -16,28 +16,33 @@ const getStatusFromDate = (orderDate) => {
 const Orders = () => {
   const { orders, loadingOrders, authReady } = useOrders();
   const navigate = useNavigate();
+  const [hasFetched, setHasFetched] = useState(false);
 
   useEffect(() => {
-    if (authReady && !loadingOrders && orders.length === 0) {
-      const timeout = setTimeout(() => {
-        navigate("/no-orders", { replace: true });
-      }, 100);
-      return () => clearTimeout(timeout);
+    if (authReady && !loadingOrders) {
+      setHasFetched(true);
     }
-  }, [orders, loadingOrders, authReady, navigate]);
+  }, [authReady, loadingOrders]);
 
-  if (!authReady || loadingOrders) {
+  useEffect(() => {
+  if (hasFetched && orders.length === 0) {
+    const timeout = setTimeout(() => {
+      navigate("/no-orders", { replace: true });
+    }, 100);
+    return () => clearTimeout(timeout);
+  }
+}, [orders, hasFetched, navigate]);
+
+  if (!hasFetched) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-          <div className="text-center space-y-3">
-            <div className="w-16 h-16 border-[6px] border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-xl font-semibold text-gray-700">Loading your orders...</p>
-          </div>
+        <div className="text-center space-y-3">
+          <div className="w-16 h-16 border-[6px] border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xl font-semibold text-gray-700">Getting your orders...</p>
         </div>
+      </div>
     );
   }
-
-  if (orders.length === 0) return null;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">

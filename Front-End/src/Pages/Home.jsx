@@ -39,17 +39,23 @@ const carouselImages = [
 export default function Home() {
   
   const [products, setProducts] = useState([]);
-
+  const [loading, setLoading] = useState(true);
+  const scrollRef = useRef(null);
+  
   useEffect(() => {
     const fetchProducts = async () => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
-      const data = await res.json();
-      setProducts(data);
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Failed to fetch products", err);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchProducts();
   }, []);
-  
-const scrollRef = useRef(null);
 
 const scroll = (direction) => {
   const container = scrollRef.current;
@@ -117,11 +123,10 @@ const scroll = (direction) => {
 
       <main className="flex flex-col gap-8 px-4 py-6">
         {featuredCategories.map((category, idx) => {
-          const books = products
-            .filter(book => book.category === category)
+          const books = products.filter(book => book.category === category)
             .slice(0, 6);
-
-          if (books.length === 0) return null;
+            
+          if (!loading && books.length === 0) return null;
 
           return (
             <section key={idx}>
@@ -129,35 +134,44 @@ const scroll = (direction) => {
                 {category}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {books.map((book, i) => (
-                <Link to={`/book/${book.id}`}
-                key={book.id || i}
-                className="block border p-4 rounded-lg hover:shadow-md transition">
-                  <div
-                    className="bg-white shadow-md rounded p-2 hover:shadow-lg transition"
-                  >
-                    <img
-                      src={book.image}
-                      alt={book.name}
-                      className="w-full h-50 object-cover rounded"
-                    />
-                    <h4 className="mt-2 text-sm font-semibold">
-                      {book.name}
-                    </h4>
-                    <p className="text-xs text-gray-500 mb-1">
-                      {book.author}
-                    </p>
-                    <div className="text-sm font-medium text-blue-600">
-                      ₹{book.newPrice}
+                {loading
+                ? [...Array(6)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="border p-4 rounded-lg animate-pulse bg-gray-100"
+                    >
+                      <div className="w-full h-32 bg-gray-300 rounded mb-2"></div>
+                      <div className="h-4 bg-gray-300 rounded w-3/4 mb-1"></div>
+                      <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+                      <div className="h-4 bg-gray-300 rounded w-1/3 mb-1"></div>
+                      <div className="h-3 bg-gray-200 rounded w-1/4"></div>
                     </div>
-                    <div className="text-xs line-through text-gray-400">
-                      ₹{book.oldPrice}
-                    </div>
-                  </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
+                  ))
+                : books.map((book, i) => (
+                    <Link
+                      to={`/book/${book.id}`}
+                      key={book.id || i}
+                      className="block border p-4 rounded-lg hover:shadow-md transition"
+                    >
+                      <div className="bg-white shadow-md rounded p-2 hover:shadow-lg transition">
+                        <img
+                          src={book.image}
+                          alt={book.name}
+                          className="w-full h-50 object-cover rounded"
+                        />
+                        <h4 className="mt-2 text-sm font-semibold">{book.name}</h4>
+                        <p className="text-xs text-gray-500 mb-1">{book.author}</p>
+                        <div className="text-sm font-medium text-blue-600">
+                          ₹{book.newPrice}
+                        </div>
+                        <div className="text-xs line-through text-gray-400">
+                          ₹{book.oldPrice}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+               </div>
+           </section>
           );
         })}
       </main>

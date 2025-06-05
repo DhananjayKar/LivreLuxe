@@ -12,12 +12,19 @@ const SingleBook = () => {
   const { placeOrder } = useOrders();
   const { id } = useParams();
   const [allProduct, setProducts] = useState([]);
-
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  
   useEffect(() => {
     const fetchProducts = async () => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
-      const data = await res.json();
-      setProducts(data);
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Failed to fetch products:", error.message);
+      } finally {
+        setLoadingProducts(false);
+      }
     };
     fetchProducts();
   }, []);
@@ -31,6 +38,17 @@ const SingleBook = () => {
 
   const foundProduct = allProduct.find(item => item.id.toString() === id);
   setCurrentProduct(foundProduct);
+
+  if (loadingProducts) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center space-y-3">
+          <div className="w-16 h-16 border-[6px] border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xl font-semibold text-gray-700">Chargement des produits...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (foundProduct) {
     const filtered = allProduct.filter(

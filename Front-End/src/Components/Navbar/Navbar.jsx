@@ -5,7 +5,7 @@ import { auth } from "../../Pages/Authentic/firebaseConfig";
 import logo from "../Assets/logo.png";
 import cart from "../Assets/cart.png";
 import userIcon from "../Assets/user.png";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import { useCart } from '../../Context/CartContext';
 
 export default function Navbar() {
@@ -13,6 +13,7 @@ export default function Navbar() {
 const menuRef = useRef(null);
 const { firebaseUser } = useAuth();
 const [hovering, setHovering] = useState(false);
+const location = useLocation();
 
 useEffect(() => {
   const handleClickOutside = (event) => {
@@ -69,7 +70,8 @@ const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
         <h3 className="text-xl font-semibold">LivreLuxe</h3>
       </div></Link>
       <div className="flex items-center space-x-4 relative">
-        <Link to="/auth">
+        <Link to="/auth" onClick={() => { localStorage.setItem("authRedirect", location.pathname);
+        }} >
           { !firebaseUser &&
         <button type="button" className="bg-white px-3 py-1 rounded hover:bg-gray-100">
           Login

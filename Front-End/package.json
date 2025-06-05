@@ -13,6 +13,7 @@
     "firebase": "^11.6.1",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.503.0",
     "num-words": "^1.2.3",
     "num2words": "^1.0.2",
