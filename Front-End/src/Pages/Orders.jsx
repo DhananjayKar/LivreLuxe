@@ -48,7 +48,7 @@ const Orders = () => {
     <div className="max-w-4xl mx-auto px-4 py-10">
       <h2 className="text-3xl font-bold mb-8">Your Orders</h2>
       <div className="relative border-l-2 border-gray-200 ml-4">
-        {orders.map((order, orderIdx) =>
+        {orders.slice().sort((p1, p2) => new Date(p2.date) - new Date(p1.date)).map((order, orderIdx) =>
           order.items.map((item, itemIdx) => (
             <div key={`${orderIdx}-${itemIdx}`} className="mb-10 ml-4 relative">
               <div className="absolute left-[-16px] top-1 w-4 h-4 bg-blue-500 rounded-full border-2 border-white" />
