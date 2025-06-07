@@ -47,4 +47,23 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
+// ✅ GET /api/orders/:id — get a specific order by ID
+router.get("/:id", verifyToken, async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    
+    if (order.userId !== req.user.uid) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

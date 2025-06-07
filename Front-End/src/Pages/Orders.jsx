@@ -14,35 +14,36 @@ const getStatusFromDate = (orderDate) => {
 };
 
 const Orders = () => {
-  const { orders, loadingOrders, authReady } = useOrders();
-  const navigate = useNavigate();
-  const [hasFetched, setHasFetched] = useState(false);
+ const { orders, loadingOrders, authReady } = useOrders();
+const navigate = useNavigate();
 
-  useEffect(() => {
-    if (authReady && !loadingOrders) {
-      setHasFetched(true);
-    }
-  }, [authReady, loadingOrders]);
+const [hasFetched, setHasFetched] = useState(false);
 
-  useEffect(() => {
-  if (hasFetched && orders.length === 0) {
+useEffect(() => {
+  if (authReady && !loadingOrders) {
+    setHasFetched(true);
+  }
+}, [authReady, loadingOrders]);
+
+useEffect(() => {
+  if (hasFetched && Array.isArray(orders) && orders.length === 0) {
     const timeout = setTimeout(() => {
       navigate("/no-orders", { replace: true });
     }, 100);
     return () => clearTimeout(timeout);
   }
-}, [orders, hasFetched, navigate]);
+}, [hasFetched, orders, navigate]);
 
-  if (!hasFetched) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-center space-y-3">
-          <div className="w-16 h-16 border-[6px] border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xl font-semibold text-gray-700">Getting your orders...</p>
-        </div>
+if (!hasFetched) {
+  return (
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="text-center space-y-3">
+        <div className="w-16 h-16 border-[6px] border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-xl font-semibold text-gray-700">Getting your orders...</p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
@@ -89,7 +90,7 @@ const Orders = () => {
                     <p className="text-sm text-gray-400 mt-1">{order.date}</p>
 
                     <div className="mt-3 flex gap-2">
-                      <Link to="/error">
+                      <Link to={`/track/${order._id}`}>
                         <button className="px-3 py-1 border rounded text-sm">
                           Track Order
                         </button>

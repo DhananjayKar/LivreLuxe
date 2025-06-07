@@ -98,9 +98,12 @@ const Cart = () => {
     };
 
     console.log("Order Summary from cart:", orderSummary);
-    placeOrder(orderSummary);
-    clearCart();
-    navigate("/orders");
+    navigate("/checkout", {
+      state: {
+        from: "cart",
+        orderSummary
+      }
+    });
   };
   
   useEffect(() => {

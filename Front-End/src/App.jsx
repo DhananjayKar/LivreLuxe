@@ -1,13 +1,16 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useMatch } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import Navbar from "./Components/Navbar/Navbar";
 import Footer from "./Components/Footer/Footer";
 import ErrorPage from "./Components/ErrorPage/ErrorPage";
 import Home from "./Pages/Home";
 import Category from "./Components/Category/Category";
+import Checkout from "./Pages/Checkout";
 import Search from "./Components/Search/Search";
 import Categories from "./Pages/Categories";
+import Track from "./Pages/Track";
 import Cart from "./Pages/Cart";
 import Orders from "./Pages/Orders"
 import { CartProvider } from './Context/CartContext';
@@ -19,6 +22,8 @@ import Authentic from "./Pages/Authentic/AuthPage";
 function AppContent() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/auth";
+  const isTracking = useMatch("/track/:orderId");
+  const isPayment = useMatch("/checkout");
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -26,18 +31,20 @@ function AppContent() {
       <OrderProvider>
       <CartProvider>
         <Navbar />
-        {!isLoginPage && <Search />}
+        {!isLoginPage && !isPayment && !isTracking && <Search />}
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/category/:name" element={<Category />} />
             <Route path="/categories" element={<Categories />} />
+            <Route path="/track/:orderId" element={<Track />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/book/:id" element={<SingleBook />} />
             <Route path="/sell" element={<ErrorPage code={503} message="Access Denied" />} />
             <Route path="/no-orders" element={<ErrorPage code={204} message="No Orders" />} />
             <Route path="/auth" element={<Authentic />} />
+            <Route path="/checkout" element={<Checkout />} />
             <Route path="*" element={<ErrorPage code={404} message="Page Not Found!" />} />
           </Routes>
         </main>
