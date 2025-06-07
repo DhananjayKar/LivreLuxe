@@ -136,7 +136,7 @@ const Checkout = () => {
             className="w-full p-2 border rounded"
           />
           <input
-            type="text"
+            type="password"
             name="cvv"
             placeholder="CVV"
             value={paymentData.cvv}

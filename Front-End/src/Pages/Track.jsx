@@ -68,9 +68,9 @@ const Track = () => {
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
       <h2 className="text-2xl font-semibold mb-6 text-center">Tracking Order #{orderId}</h2>
 
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0">
         {mockStatusFlow.map((step, index) => (
-          <div key={step.label} className="flex flex-col items-center w-1/5">
+          <div key={step} className="flex flex-col items-center w-full md:w-1/5">
             <div className="mb-1">{step.icon}</div>
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
