@@ -22,7 +22,7 @@ useEffect(() => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold">{capitalizeWords(decodeCategoryName(name))}</h2>
+      <h2 className="text-2xl ms-10 font-bold">{capitalizeWords(decodeCategoryName(name))}</h2>
 
       <div className="space-y-6">
         {filteredProducts.map((item) => (
