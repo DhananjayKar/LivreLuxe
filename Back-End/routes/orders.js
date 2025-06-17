@@ -47,17 +47,24 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
-// ✅ GET /api/orders/:id — get a specific order by ID
 router.get("/:id", verifyToken, async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: "Order not found" });
+    if (order.userId !== req.user.uid) return res.status(403).json({ message: "Unauthorized" });
 
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
-    }
-    
-    if (order.userId !== req.user.uid) {
-      return res.status(403).json({ message: "Unauthorized" });
+    // ✅ Auto-update status based on date
+    const orderDay = new Date(order.date);
+    const today = new Date();
+    const diffDays = Math.floor((today - orderDay) / (1000 * 60 * 60 * 24));
+
+    let updatedStatus = "PENDING";
+    if (diffDays >= 5) updatedStatus = "DELIVERED";
+    else if (diffDays >= 2) updatedStatus = "SHIPPED";
+
+    if (order.status !== updatedStatus) {
+      order.status = updatedStatus;
+      await order.save();
     }
 
     res.json(order);

@@ -13,6 +13,7 @@ import Categories from "./Pages/Categories";
 import Track from "./Pages/Track";
 import Cart from "./Pages/Cart";
 import Orders from "./Pages/Orders"
+import SellItem from "./Pages/SellItem"
 import { CartProvider } from './Context/CartContext';
 import { OrderProvider } from './Context/OrderContext';
 import { AuthProvider } from './Context/AuthProvider';
@@ -24,6 +25,7 @@ function AppContent() {
   const isLoginPage = location.pathname === "/auth";
   const isTracking = useMatch("/track/:orderId");
   const isPayment = useMatch("/checkout");
+  const isSellItem = useMatch("/sell-item");
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -31,7 +33,7 @@ function AppContent() {
       <OrderProvider>
       <CartProvider>
         <Navbar />
-        {!isLoginPage && !isPayment && !isTracking && <Search />}
+        {!isLoginPage && !isPayment && !isTracking && !isSellItem && <Search />}
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -41,7 +43,7 @@ function AppContent() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/book/:id" element={<SingleBook />} />
-            <Route path="/sell" element={<ErrorPage code={503} message="Access Denied" />} />
+            <Route path="/sell-item" element={ <SellItem />} />
             <Route path="/no-orders" element={<ErrorPage code={204} message="No Orders" />} />
             <Route path="/auth" element={<Authentic />} />
             <Route path="/checkout" element={<Checkout />} />

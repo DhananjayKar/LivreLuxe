@@ -133,7 +133,7 @@ const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
       {menuOpen && (
         <ul className="absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg py-2 z-10 transition-opacity duration-200">
-          <Link to="/sell">
+          <Link to="/sell-item">
             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
             Sell an item
           </li>
@@ -147,7 +147,7 @@ const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
           
           <Link to="/cart">
             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-              Your cart
+              Your Cart
             </li>
           </Link>
           <Link to="/categories">

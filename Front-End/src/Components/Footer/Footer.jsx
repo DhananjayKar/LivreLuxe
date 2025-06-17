@@ -24,7 +24,7 @@ export default function Footer() {
           <h2 className="text-xl font-bold">Quick Links</h2>
           <div className="underline w-12 h-1 bg-black rounded-xl my-2"></div>
           <ul className="text-sm space-y-1">
-            <Link to="/sell"><li>Sell an Item</li></Link>
+            <Link to="/sell-item"><li>Sell an Item</li></Link>
             <Link to="/categories"><li>Categories</li></Link>
             <Link to="/cart"><li>Your Cart</li></Link>
           </ul>

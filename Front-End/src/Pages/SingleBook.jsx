@@ -206,7 +206,7 @@ const SingleBook = () => {
           ₹{Number(currentProduct.newPrice).toFixed(2)}
         </span>
         <span className="line-through text-gray-500">
-          ₹{(Number(currentProduct.oldPrice) * 1.5).toFixed(2)}
+          ₹{(Number(currentProduct.oldPrice) ).toFixed(2)}
         </span>
       </div>
 

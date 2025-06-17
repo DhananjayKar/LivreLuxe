@@ -1,38 +1,47 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-export default function Categories () {
-  const categoryMap = {};
+export default function Categories() {
   const [allProducts, setProducts] = useState([]);
-  const [loadingProducts, setLoadingProducts] = useState(true);
-  
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch products
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
-        const data = await res.json();
-        setProducts(data);
+        const [productRes, categoryRes] = await Promise.all([
+          fetch(`${import.meta.env.VITE_API_URL}/api/products`),
+          fetch(`${import.meta.env.VITE_API_URL}/api/categories`),
+        ]);
+
+        const productData = await productRes.json();
+        const categoryData = await categoryRes.json();
+
+        setProducts(productData);
+        setCategories(categoryData);
       } catch (err) {
-        console.error("Failed to fetch products:", err.message);
+        console.error("Failed to fetch:", err.message);
       } finally {
-        setLoadingProducts(false);
+        setLoading(false);
       }
     };
-  
-    fetchProducts();
+
+    fetchData();
   }, []);
-  
-  if (loadingProducts) {
+
+  if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="text-center space-y-3">
           <div className="w-16 h-16 border-[6px] border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xl font-semibold text-gray-700">Loading products...</p>
+          <p className="text-xl font-semibold text-gray-700">Loading categories...</p>
         </div>
       </div>
     );
   }
-  
+
+  const categoryMap = {};
   allProducts.forEach((product) => {
     if (!categoryMap[product.category]) {
       categoryMap[product.category] = [];
@@ -40,31 +49,34 @@ export default function Categories () {
     categoryMap[product.category].push(product);
   });
 
-  const randomProducts = Object.keys(categoryMap).map((category) => {
-    const products = categoryMap[category];
-    const randomProduct = products[Math.floor(Math.random() * products.length)];
-    return { category, ...randomProduct };
-  });
+  const displayData = categories.map((catObj) => {
+    const catName = catObj.name;
+    const productsInCat = categoryMap[catName] || [];
+    const randomProduct = productsInCat[Math.floor(Math.random() * productsInCat.length)];
+    return {
+      category: catName,
+      product: randomProduct,
+    };
+  }).filter(item => item.product); // Remove empty ones
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-8 p-8">
-      {randomProducts.map((item) => (
+      {displayData.map(({ category, product }) => (
         <Link
-          to={`/category/${item.category.replace(/\s+/g, '-').toLowerCase()}`}
-          key={item.id}
+          to={`/category/${category.replace(/\s+/g, '-').toLowerCase()}`}
+          key={category}
           className="relative group border rounded-2xl shadow hover:shadow-lg transition overflow-hidden"
         >
           <img
-            src={item.image}
-            alt={item.name}
+            src={product.image}
+            alt={product.name}
             className="w-full h-64 object-contain"
           />
-        
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-            <h3 className="text-white text-xl font-bold">{item.category}</h3>
+            <h3 className="text-white text-xl font-bold">{category}</h3>
           </div>
         </Link>
       ))}
     </div>
   );
-};
+}
