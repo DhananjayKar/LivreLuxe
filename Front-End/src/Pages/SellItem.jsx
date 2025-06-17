@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../Pages/Authentic/firebaseConfig";
 import { useNavigate } from "react-router-dom";
@@ -116,27 +117,86 @@ export default function SellItem() {
         <input value={newPrice} onChange={(e) => setNewPrice(e.target.value)} required type="number" placeholder="New Price" className="w-full p-2 border rounded" />
         <input value={oldPrice} onChange={(e) => setOldPrice(e.target.value)} type="number" placeholder="Old Price (optional)" className="w-full p-2 border rounded" />
         <input value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="Author (optional)" className="w-full p-2 border rounded" />
-        <input type="file" onChange={(e) => setImage(e.target.files[0])} accept="image/*" required className="w-full p-2" />
+
+        <label
+          htmlFor="image"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 transition"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12V4m0 8l-3-3m3 3l3-3" />
+          </svg>
+          Upload Cover Image
+        </label>
+        <input
+          type="file"
+          id="image"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
+          style={{ display: "none" }}
+        />
+        
+        {image && (
+          <p style={{ marginTop: "8px", fontSize: "14px", color: "#333" }}>
+            Selected: <strong>{image.name}</strong>
+          </p>
+        )}
 
         <div>
           <label className="block font-medium mb-1">Category</label>
-          {addingCategory ? (
-            <input value={newCategory} onChange={(e) => setNewCategory(e.target.value)} placeholder="New Category Name" className="w-full p-2 border rounded" />
-          ) : (
-            <select value={category} onChange={(e) => setCategory(e.target.value)} required className="w-full p-2 border rounded">
-              <option value="" className="hidden">Select Category</option>
-              {categories.map((c) => (
-                <option key={c._id} value={c.name}>{c.name}</option>
-              ))}
-            </select>
-          )}
-          <button
-            type="button"
-            onClick={() => setAddingCategory(!addingCategory)}
-            className="text-blue-600 mt-1 underline"
-          >
-            {addingCategory ? "Cancel new category" : "+ Add new category"}
-          </button>
+        
+          <AnimatePresence mode="wait">
+            {!addingCategory ? (
+              <motion.select
+                key="category-select"
+                value={category}
+                onChange={(e) => {
+                  if (e.target.value === "__new__") {
+                    setAddingCategory(true);
+                    setCategory("");
+                  } else {
+                    setCategory(e.target.value);
+                  }
+                }}
+                required
+                className="w-full p-2 border rounded"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <option value="" className="hidden">Select Category</option>
+                {categories.map((c) => (
+                  <option key={c._id} value={c.name}>{c.name}</option>
+                ))}
+                <option value="__new__">➕ Add new category</option>
+              </motion.select>
+            ) : (
+              <motion.div
+                key="new-category-input"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <input
+                  type="text"
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  placeholder="New Category Name"
+                  className="w-full p-2 border rounded"
+                />
+                <motion.button
+                  type="button"
+                  onClick={() => setAddingCategory(false)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="ml-auto mt-2 px-4 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 block w-fit text-sm shadow"
+                >
+                  ✖ Cancel 
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition">
