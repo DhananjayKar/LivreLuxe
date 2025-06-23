@@ -1,13 +1,15 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useMatch } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import Navbar from "./Components/Navbar/Navbar";
 import Footer from "./Components/Footer/Footer";
+import Admin from "./Components/Admin/Admin";
 import ErrorPage from "./Components/ErrorPage/ErrorPage";
 import Home from "./Pages/Home";
 import Category from "./Components/Category/Category";
 import Checkout from "./Pages/Checkout";
+import Developer from "./Pages/Developer";
 import Search from "./Components/Search/Search";
 import Categories from "./Pages/Categories";
 import Track from "./Pages/Track";
@@ -24,16 +26,37 @@ function AppContent() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/auth";
   const isTracking = useMatch("/track/:orderId");
+  const isAdmin = useMatch("/admin");
   const isPayment = useMatch("/checkout");
   const isSellItem = useMatch("/sell-item");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleKeyCombo = (e) => {
+      if (
+        e.ctrlKey &&
+        e.shiftKey &&
+        (e.key === "d" || e.key === "D") &&
+        !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)
+      ) {
+        navigate("/developer");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyCombo);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyCombo);
+    };
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex flex-col">
       <AuthProvider>
       <OrderProvider>
       <CartProvider>
-        <Navbar />
-        {!isLoginPage && !isPayment && !isTracking && !isSellItem && <Search />}
+        {location.pathname !== "/developer" && <Navbar />}
+        {!isLoginPage && !isAdmin && !isPayment && !isTracking && !isSellItem && location.pathname !== "/developer" && <Search />}
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -44,31 +67,34 @@ function AppContent() {
             <Route path="/orders" element={<Orders />} />
             <Route path="/book/:id" element={<SingleBook />} />
             <Route path="/sell-item" element={ <SellItem />} />
+            <Route path="/developer" element={ <Developer />} />
             <Route path="/no-orders" element={<ErrorPage code={204} message="No Orders" />} />
             <Route path="/auth" element={<Authentic />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="*" element={<ErrorPage code={404} message="Page Not Found!" />} />
           </Routes>
         </main>
-        <Footer />
-        <Toaster
-          position="top-center"
-          reverseOrder={false}
-          toastOptions={{
-            duration: 2500,
-            style: {
-              background: 'rgba(30, 30, 30, 0.85)',
-              color: '#fff',
-              backdropFilter: 'blur(10px)',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.25)',
-            },
-          }}
-          containerStyle={{
-            top: 60,
-          }}
-          gutter={16}
-          animation="zoom"
-        />
+        {location.pathname !== "/developer" && <Footer />}
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 2500,
+          style: {
+            background: 'rgba(230, 245, 255, 0.95)',
+            color: '#0a2540',
+            backdropFilter: 'blur(10px)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+            border: '1px solid #cce4f6',
+          },
+        }}
+        containerStyle={{
+          top: 60,
+        }}
+        gutter={16}
+        animation="zoom"
+      />
       </CartProvider>
       </OrderProvider>
       </AuthProvider>

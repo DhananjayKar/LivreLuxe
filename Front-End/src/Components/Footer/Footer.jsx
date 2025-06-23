@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import call from "../Assets/call.png";
 import mail from "../Assets/email.png";
 import map from "../Assets/map.png";
@@ -6,9 +6,44 @@ import github from "../Assets/github.png";
 import facebook from "../Assets/facebook.png";
 import instagram from "../Assets/instagram.png";
 import "./Footer.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Footer() {
+  
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const element = document.getElementById("dev-trigger");
+    if (!element) return;
+
+    let pressTimer;
+
+    const startPress = () => {
+      pressTimer = setTimeout(() => {
+        navigate("/developer");
+      }, 1000);
+    };
+
+    const cancelPress = () => {
+      clearTimeout(pressTimer);
+    };
+    
+    element.addEventListener("mousedown", startPress);
+    element.addEventListener("mouseup", cancelPress);
+    element.addEventListener("mouseleave", cancelPress);
+
+    element.addEventListener("touchstart", startPress);
+    element.addEventListener("touchend", cancelPress);
+
+    return () => {
+      element.removeEventListener("mousedown", startPress);
+      element.removeEventListener("mouseup", cancelPress);
+      element.removeEventListener("mouseleave", cancelPress);
+      element.removeEventListener("touchstart", startPress);
+      element.removeEventListener("touchend", cancelPress);
+    };
+  }, [navigate]);
+  
   return (
     <footer className="bg-blue-400 pt-10">
       <div className="flex flex-wrap justify-evenly gap-8 px-6">
@@ -49,7 +84,7 @@ export default function Footer() {
       </div>
 
       <div className="bg-[#f8f8f8] text-gray-700 text-center py-4 mt-8 px-6 flex flex-col md:flex-row items-center justify-between">
-        <p className="text-sm mb-2 md:mb-0">&copy;2025 Dhananjay Kar - All Rights Reserved.</p>
+        <p className="text-sm mb-2 md:mb-0">&copy;2025 <span id="dev-trigger" className="font-semibold cursor-pointer">Dhananjay Kar</span> - All Rights Reserved.</p>
         <div className="flex space-x-4">
           <a href="https://www.instagram.com/kardhananjay9?igsh=YzljYTk1ODg3Zg==">
             <img src={instagram} alt="instagram icon" className="w-5 h-5" />

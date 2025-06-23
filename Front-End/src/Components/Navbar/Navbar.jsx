@@ -5,7 +5,7 @@ import { auth } from "../../Pages/Authentic/firebaseConfig";
 import logo from "../Assets/logo.png";
 import cart from "../Assets/cart.png";
 import userIcon from "../Assets/user.png";
-import {Link, useLocation} from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from '../../Context/CartContext';
 
 export default function Navbar() {
@@ -14,6 +14,7 @@ const menuRef = useRef(null);
 const { firebaseUser } = useAuth();
 const [hovering, setHovering] = useState(false);
 const location = useLocation();
+const navigate = useNavigate();
 
 useEffect(() => {
   const handleClickOutside = (event) => {
@@ -133,9 +134,10 @@ const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
       {menuOpen && (
         <ul className="absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg py-2 z-10 transition-opacity duration-200">
+          
           <Link to="/sell-item">
             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-            Sell an item
+            Sell an Item
           </li>
           </Link>
           
@@ -155,6 +157,13 @@ const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
               Categories
             </li>
           </Link>
+          
+           <Link to="/admin">
+            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+            Admin Dashboard
+          </li>
+          </Link>
+          
           { firebaseUser &&
           <li className="px-4 py-2 hover:bg-red-400 hover:rounded-xl cursor-pointer"><button
               onClick={handleLogout}

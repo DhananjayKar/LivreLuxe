@@ -8,7 +8,14 @@ router.post("/", async (req, res) => {
 
   try {
     const decoded = await admin.auth().verifyIdToken(token);
-    const { uid, email, name } = decoded;
+    const { uid, email, name: decodedName } = decoded;
+
+    const finalName =
+      (username && username.trim()) || decodedName || "User";
+
+    console.log("→ UID:", uid);
+    console.log("→ Email:", email);
+    console.log("→ Final name to store:", finalName);
 
     let user = await User.findOne({ uid });
 
@@ -16,7 +23,8 @@ router.post("/", async (req, res) => {
       user = await User.create({
         uid,
         email,
-        name: username || name || "User",
+        name: finalName,
+        role: "user",
       });
     }
 
@@ -28,10 +36,10 @@ router.post("/", async (req, res) => {
         email: user.email,
         name: user.name,
         role: user.role,
-      }
+      },
     });
   } catch (err) {
-    console.error("Auth error:", err);
+    console.error("🔥 Auth error:", err);
     res.status(401).json({ success: false, error: "Unauthorized" });
   }
 });

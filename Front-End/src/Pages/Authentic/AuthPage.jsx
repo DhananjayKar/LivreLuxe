@@ -1,189 +1,169 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signInWithPopup
-} from "firebase/auth";
 import { auth, provider } from "./firebaseConfig";
-import "./AuthPage.css";
-import { Eye, EyeOff } from "lucide-react";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  updateProfile,
+} from "firebase/auth";
 import { toast } from "react-hot-toast";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import "./AuthPage.css";
 
 const AuthPage = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [redirectTo, setRedirectTo] = useState("/");
+  const [isLogin, setIsLogin] = useState(true);
+  const [animationKey, setAnimationKey] = useState(0);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleToggle = () => {
-    setIsLogin(!isLogin);
-    setError("");
-    setEmail("");
-    setUsername("");
-    setPassword("");
-  };
-  
-  const getFriendlyError = (code) => {
-    switch (code) {
-      case "auth/email-already-in-use":
-        return "This email is already in use.";
-      case "auth/invalid-email":
-        return "Please enter a valid email.";
-      case "auth/wrong-password":
-        return "Incorrect password.";
-      default:
-        return "An error occurred. Please try again.";
-    }
-  };
-
-  const sendTokenToBackend = async (usernameOptional) => {
-    const user = auth.currentUser;
-    if (user) {
-      const token = await user.getIdToken();
-
-      await fetch(`${import.meta.env.VITE_API_URL}/api/auth`, {
+  const sendTokenToBackend = async (token) => {
+    try {
+      const res = await fetch("http://localhost:5000/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token,
-          username: usernameOptional || user.displayName,
-        }),
+        body: JSON.stringify({ token }),
       });
+      const data = await res.json();
+      if (!data.success) toast.error("Token rejected by backend.");
+    } catch (err) {
+      console.error("Backend error:", err);
+      toast.error("Failed to reach backend.");
     }
   };
 
-  const handleSignup = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      toast.success("Account created!");
-      await sendTokenToBackend(username);
-      navigate(redirectTo);
-    } catch (err) {
-      setError(getFriendlyError(err.code));
-    }
-  };
+    if (password.length < 6) return toast.error("Password must be at least 6 characters.");
+    if (!isLogin && username.trim().length < 3) return toast.error("Username too short.");
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      toast.success("Login.successful!");
-      await sendTokenToBackend();
-      navigate(redirectTo);
-    } catch (err) {
-      if (err.code === "auth/user-not-found") {
-        toast.error("This account hasn't been signed in. Sign up first.");
-      } else {
-        setError(getFriendlyError(err.code));
+      const userCred = isLogin
+        ? await signInWithEmailAndPassword(auth, email, password)
+        : await createUserWithEmailAndPassword(auth, email, password);
+
+      if (!isLogin) {
+        await updateProfile(userCred.user, { displayName: username });
       }
+
+      const token = await userCred.user.getIdToken();
+      await sendTokenToBackend(token);
+
+      const name = userCred.user.displayName || userCred.user.email;
+      toast.success(`${isLogin ? "Welcome back" : "Welcome"}, ${name.split(" ")[0]}!`);
+      navigate("/");
+    } catch (err) {
+      console.error("Auth error:", err.message);
+      toast.error("Authentication failed. Try with Google.");
     }
   };
-  
+
   const handleGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      const isNewUser = result._tokenResponse?.isNewUser;
-  
-      if (isNewUser) {
-        toast.error("This account hasn't been signed in. Sign up first.");
-        await auth.signOut();
-        return;
-      }
-  
-      toast.success("Signed in with Google!");
-      await sendTokenToBackend(result.user.displayName);
-      navigate(redirectTo);
+      const token = await result.user.getIdToken();
+      await sendTokenToBackend(token);
+
+      const name = result.user.displayName || result.user.email;
+      toast.success(`Welcome, ${name.split(" ")[0]}!`);
+      navigate("/");
     } catch (err) {
-      setError(getFriendlyError(err.code));
+      console.error("Google Sign-In Error:", err);
+      toast.error("Google sign-in failed.");
     }
   };
-  
-  useEffect(() => {
-    const redirectPath = localStorage.getItem("authRedirect") || "/";
-    setRedirectTo(redirectPath);
-  }, []);
 
   return (
     <div className="auth-wrapper">
-      <div className={`auth-box ${!isLogin ? "rotate" : ""}`}>
-        
+      <div className="auth-container">
+        {/* Left Side */}
         <div className="auth-left">
-          <h1 className="text-4xl font-bold mb-4">
-            {isLogin ? "Welcome Back!" : "Join Us Today!"}
-          </h1>
-          <p className="text-lg text-gray-700">
-            {isLogin
-              ? "Access your account and explore your personal library."
-              : "Create an account to start your reading journey with us."}
-          </p>
+          <h1>{isLogin ? "Welcome Back!" : "Join LivreLuxe!"}</h1>
+          <div>
+          {isLogin ? (
+            <>
+              <p className="text-2xl font-bold mb-2">Welcome back, reader!</p>
+              <p className="text-base leading-relaxed">
+                Your bookshelf missed you. Let’s pick up where you left off — or maybe discover something completely new today?
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-2xl font-bold mb-2">Hey, welcome to LivreLuxe!</p>
+              <p className="text-base leading-relaxed">
+                You just stepped into a world of stories, ideas, and imagination. <br />
+                Sign up, explore our shelf, and start your own reading journey — no pressure, just pages 📖✨
+              </p>
+            </>
+          )}
+          </div>
         </div>
 
-        
-        <div className={`auth-right`}>
-          <div className={`auth-form-wrapper ${!isLogin ? "rotate" : ""}`}>
-            <form onSubmit={isLogin ? handleLogin : handleSignup} className="auth-form">
-              <h2 className="text-2xl font-bold mb-4 text-center">
-                {isLogin ? "Login" : "Sign Up"}
-              </h2>
+        {/* Right Side */}
+        <div className={`auth-right animated-${animationKey % 2 === 0 ? "even" : "odd"}`}>
+          <div className="form-box">
+            <h2>{isLogin ? "Login to Your Account" : "Create an Account"}</h2>
 
+            <form onSubmit={handleSubmit}>
               {!isLogin && (
                 <input
-                  className="auth-input border-2 rounded"
+                  type="text"
                   placeholder="Username"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value.trim())}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
                 />
               )}
               <input
-                className="auth-input border-2 rounded"
+                type="email"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value.trim())}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
-              <div className="relative w-full mb-3">
+              <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  className="w-full px-4 py-2 pr-10 border-2 rounded"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full p-3 pr-10 border rounded-lg"
                 />
                 <span
-                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
                   onClick={() => setShowPassword(!showPassword)}
+                  className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 text-xl cursor-pointer"
                 >
-                  {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
               </div>
-              {error && <p className="text-red-500 text-sm text-center mb-3">{error}</p>}
 
-              <button type="submit" className="auth-btn bg-blue-600 hover:bg-blue-700">
-                {isLogin ? "Login" : "Sign Up"}
-              </button>
-
-              <p
-                className="text-sm text-blue-500 text-center cursor-pointer mt-2"
-                onClick={handleToggle}
-              >
-                {isLogin
-                  ? "Don't have an account? Sign up"
-                  : "Already have an account? Login"}
-              </p>
-
-              <button
-                type="button"
-                onClick={handleGoogle}
-                className="auth-btn bg-red-500 hover:bg-red-600 mt-3"
-              >
-                Sign in with Google
-              </button>
+              <button type="submit">{isLogin ? "Login" : "Sign Up"}</button>
             </form>
+
+            <div className="divider">or</div>
+
+            <button
+              onClick={handleGoogle}
+              className="w-full flex items-center justify-center gap-3 px-5 py-2 rounded-xl bg-white/20 backdrop-blur-md text-black border border-white/30 shadow-md transition-all duration-300 hover:bg-red-600 hover:text-white hover:rounded-full"
+            >
+              Sign in with Google
+            </button>
+
+            <p className="switch-text">
+              {isLogin ? "Need an account?" : "Already have an account?"}{" "}
+              <span
+                onClick={() => {
+                  setIsLogin(!isLogin);
+                  setAnimationKey((prev) => prev + 1);
+                }}
+              >
+                {isLogin ? "Sign up" : "Login"}
+              </span>
+            </p>
           </div>
         </div>
       </div>
