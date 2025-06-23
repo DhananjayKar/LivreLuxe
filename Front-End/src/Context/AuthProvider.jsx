@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
       setFirebaseUser(user || null);
       if (user) {
         try {
-          const res = await fetch(`${API}/api/users/email/${user.email}`);
+          const res = await fetch(`${API}/api/users/email/${encodeURIComponent(user.email)}`);
           if (!res.ok) throw new Error("Failed to fetch role");
           const data = await res.json();
           setUserRole(data.role);
