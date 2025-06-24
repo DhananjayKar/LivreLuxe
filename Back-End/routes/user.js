@@ -51,7 +51,7 @@ router.put("/:id/promote", async (req, res) => {
 
 router.get("/email/:email", async (req, res) => {
   try {
-    const email = req.params.email.toLowerCase(); // Normalize email
+    const email = req.params.email.toLowerCase();
     const user = await User.findOne({ email });
 
     if (!user) {

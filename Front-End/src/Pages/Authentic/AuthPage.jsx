@@ -25,7 +25,7 @@ const AuthPage = () => {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
+        body: JSON.stringify({ token, username }),
       });
       const data = await res.json();
       if (!data.success) toast.error("Token rejected by backend.");
@@ -50,7 +50,7 @@ const AuthPage = () => {
       }
 
       const token = await userCred.user.getIdToken();
-      await sendTokenToBackend(token);
+      await sendTokenToBackend(token, username);
 
       const name = userCred.user.displayName || userCred.user.email;
       toast.success(`${isLogin ? "Welcome back" : "Welcome"}, ${name.split(" ")[0]}!`);
@@ -65,8 +65,7 @@ const AuthPage = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const token = await result.user.getIdToken();
-      await sendTokenToBackend(token);
-
+      await sendTokenToBackend(token, result.user.displayName);
       const name = result.user.displayName || result.user.email;
       toast.success(`Welcome, ${name.split(" ")[0]}!`);
       navigate("/");
