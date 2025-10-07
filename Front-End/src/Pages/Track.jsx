@@ -7,7 +7,7 @@ import {
   Settings,
   Truck,
   PackageCheck,
-  CheckCircle,
+  CheckCircle
 } from "lucide-react";
 
 const mockStatusFlow = [
@@ -15,7 +15,7 @@ const mockStatusFlow = [
   { label: "PROCESSING", icon: <Settings size={20} /> },
   { label: "SHIPPED", icon: <Truck size={20} /> },
   { label: "OUT FOR DELIVERY", icon: <PackageCheck size={20} /> },
-  { label: "DELIVERED", icon: <CheckCircle size={20} /> },
+  { label: "DELIVERED", icon: <CheckCircle size={20} /> }
 ];
 
 const Track = () => {
@@ -36,9 +36,7 @@ const Track = () => {
       try {
         const token = await user.getIdToken();
         const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/${orderId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` }
         });
 
         if (!res.ok) throw new Error("Failed to fetch order");
@@ -70,13 +68,16 @@ const Track = () => {
 
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0">
         {mockStatusFlow.map((step, index) => (
-          <div key={step} className="flex flex-col items-center w-full md:w-1/5">
+          <div key={step.label} className="flex flex-col items-center w-full md:w-1/5">
             <div className="mb-1">{step.icon}</div>
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
-                ${index < currentStep ? "bg-green-500 text-white"
-                  : index === currentStep ? "bg-blue-500 text-white"
-                  : "bg-gray-300 text-black"}`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                index < currentStep
+                  ? "bg-green-500 text-white"
+                  : index === currentStep
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-300 text-black"
+              }`}
             >
               {index + 1}
             </div>

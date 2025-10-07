@@ -51,8 +51,11 @@ export default function Footer() {
           <h2 className="text-xl font-bold">LivreLuxe</h2>
           <div className="underline w-12 h-1 bg-black rounded-xl my-2"></div>
           <p className="text-sm">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dicta nam tempore rerum quaerat, maxime nobis autem ullam enim asperiores. Ipsam eaque provident sint ad, voluptates praesentium eligendi.
-          </p>
+            At LivreLuxe, every book tells a story worth sharing. 
+            Discover handpicked reads, from timeless classics to modern gems, and let every page spark your imagination.
+            Find your next great read at LivreLuxe. 
+            From inspiring classics to fresh new voices, we make discovering books effortless, fun, and full of stories you’ll love.
+            </p>
         </div>
 
         <div>

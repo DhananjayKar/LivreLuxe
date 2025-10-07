@@ -3,39 +3,35 @@ import { useOrders } from "../Context/OrderContext";
 import { Link, useNavigate } from "react-router-dom";
 import { downloadInvoice } from "../Utils/pdfInvoice";
 
-const getStatusFromDate = (orderDate) => {
-  const orderDay = new Date(orderDate);
-  const today = new Date();
-  const diffTime = today - orderDay;
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  if (diffDays >= 5) return "DELIVERED";
-  if (diffDays >= 2) return "SHIPPED";
-  return "PENDING";
-};
-
 const Orders = () => {
   const { orders, loadingOrders, authReady } = useOrders();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (authReady && !loadingOrders && Array.isArray(orders) && orders.length === 0) {
-      const timeout = setTimeout(() => {
-        navigate("/no-orders", { replace: true });
-      }, 100);
+      const timeout = setTimeout(() => navigate("/no-orders", { replace: true }), 100);
       return () => clearTimeout(timeout);
     }
   }, [authReady, loadingOrders, orders, navigate]);
 
-  if (!authReady || loadingOrders) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-center space-y-3">
-          <div className="w-16 h-16 border-[6px] border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xl font-semibold text-gray-700">Getting your orders...</p>
-        </div>
+  // Redirect back button to home
+  useEffect(() => {
+    const handlePopState = () => {
+      navigate("/", { replace: true });
+    };
+    window.addEventListener("popstate", handlePopState);
+
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [navigate]);
+
+  if (!authReady || loadingOrders) return (
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="text-center space-y-3">
+        <div className="w-16 h-16 border-[6px] border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-xl font-semibold text-gray-700">Getting your orders...</p>
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
@@ -43,51 +39,40 @@ const Orders = () => {
       <div className="relative border-l-2 border-gray-200 ml-4">
         {orders
           .slice()
-          .sort((p1, p2) => new Date(p2.date) - new Date(p1.date))
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
           .map((order, orderIdx) =>
             order.items.map((item, itemIdx) => (
               <div key={`${orderIdx}-${itemIdx}`} className="mb-10 ml-4 relative">
                 <div className="absolute left-[-16px] top-1 w-4 h-4 bg-blue-500 rounded-full border-2 border-white" />
                 <div className="bg-white shadow-md p-4 rounded-lg">
                   <div className="flex gap-4">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-20 h-28 object-cover rounded"
-                    />
+                    <img src={item.image} alt={item.name} className="w-20 h-28 object-cover rounded" />
                     <div>
                       <h3 className="text-xl font-semibold">{item.name}</h3>
-                      {item.author && (
-                        <p className="text-gray-500">by {item.author}</p>
-                      )}
+                      {item.author && <p className="text-gray-500">by {item.author}</p>}
                       <p className="text-sm text-gray-700 mt-1">Qty: {item.quantity}</p>
                       <p className="text-sm text-gray-700">Discount: ₹{order.discount}</p>
                       <p className="font-medium mt-1">Total: ₹{order.grandTotal}</p>
 
                       <span
                         className={`text-sm font-medium inline-block mt-1 px-2 py-1 rounded ${
-                          getStatusFromDate(order.date) === "DELIVERED"
+                          order.status === "DELIVERED"
                             ? "bg-green-100 text-green-800"
-                            : getStatusFromDate(order.date) === "SHIPPED"
+                            : order.status === "SHIPPED"
                             ? "bg-gray-100 text-gray-800"
                             : "bg-yellow-100 text-yellow-800"
                         }`}
                       >
-                        {getStatusFromDate(order.date)}
+                        {order.status}
                       </span>
-
-                      <p className="text-sm text-gray-400 mt-1">{order.date}</p>
+                      
+                      <p className="text-sm text-gray-400 mt-1">{order.dateString}</p>
 
                       <div className="mt-3 flex gap-2">
                         <Link to={`/track/${order._id}`}>
-                          <button className="px-3 py-1 border rounded text-sm">
-                            Track Order
-                          </button>
+                          <button className="px-3 py-1 border rounded text-sm">Track Order</button>
                         </Link>
-                        <button
-                          onClick={() => downloadInvoice(order)}
-                          className="px-3 py-1 border rounded text-sm"
-                        >
+                        <button onClick={() => downloadInvoice(order)} className="px-3 py-1 border rounded text-sm">
                           Download Invoice
                         </button>
                       </div>

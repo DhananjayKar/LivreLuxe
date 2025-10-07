@@ -17,6 +17,15 @@ const Cart = () => {
   const [couponApplied, setCouponApplied] = useState(false);
   const [allProducts, setAllProducts] = useState([]);
 
+  const [loadingDots, setLoadingDots] = useState("");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLoadingDots(prev => (prev.length < 3 ? prev + "." : ""));
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -36,7 +45,6 @@ const Cart = () => {
       setUser(user || null);
       setAuthChecked(true);
     });
-  
     return () => unsubscribe();
   }, []);
 
@@ -70,13 +78,9 @@ const Cart = () => {
   const handleCheckout = () => {
     if (cartItems.length === 0) {
       toast("This is a warning!", {
-      icon: "⚠️",
-      style: {
-        background: "#fff3cd",
-        color: "#856404",
-        border: "1px solid #ffeeba"
-      }
-    });
+        icon: "⚠️",
+        style: { background: "#fff3cd", color: "#856404", border: "1px solid #ffeeba" }
+      });
       return;
     }
 
@@ -97,31 +101,38 @@ const Cart = () => {
       grandTotal
     };
 
-    console.log("Order Summary from cart:", orderSummary);
-    navigate("/checkout", {
-      state: {
-        from: "cart",
-        orderSummary
-      }
+    navigate("/address", {
+      state: { from: "cart", orderSummary, replace: true }
     });
   };
   
   useEffect(() => {
-  if (authChecked && !user) {
-    toast.error("Please log in first!");
-  }
-}, [authChecked, user]);
+    if (authChecked && !user) {
+      toast.error("Please log in first!");
+    }
+  }, [authChecked, user]);
 
-if (!authChecked) {
-  return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="text-center space-y-3">
-        <div className="w-16 h-16 border-[6px] border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-xl font-semibold text-gray-700">Checking login status...</p>
+  // ===== Textual loading for auth check =====
+  if (!authChecked) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-xl font-semibold text-gray-700 animate-pulse">
+          Checking login status{loadingDots}
+        </p>
       </div>
-    </div>
-  );
-}
+    );
+  }
+
+  // ===== Textual loading for products =====
+  if (allProducts.length === 0) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-xl font-semibold text-gray-700 animate-pulse">
+          Loading products{loadingDots}
+        </p>
+      </div>
+    );
+  }
 
   if (cartItems.length === 0) {
     return (
@@ -173,7 +184,7 @@ if (!authChecked) {
       className="block md:table-row md:border-b border-none mb-4"
     >
 
-      <td className="block md:hidden flex gap-4 p-4 shadow rounded border">
+      <td className="block md:hidden gap-4 p-4 shadow rounded border">
         <img
           src={item.image}
           alt={item.name}

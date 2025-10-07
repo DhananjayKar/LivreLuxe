@@ -8,33 +8,34 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-  const unsubscribe = auth.onAuthStateChanged(async (user) => {
-    if (!user) return;
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (!user) return;
 
-    const token = await user.getIdToken();
+      const token = await user.getIdToken();
 
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/cart`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/cart`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      const cleaned = data.items.map(item => ({
-        productId: typeof item.productId === "object" ? item.productId.id : item.productId,
-        quantity: item.quantity
-      }));
+        const cleaned = data.items.map((item) => ({
+          productId:
+            typeof item.productId === "object" ? item.productId.id : item.productId,
+          quantity: item.quantity,
+        }));
 
-      setCartItems(cleaned);
-    } catch (err) {
-      console.error("Failed to fetch cart:", err.message);
-    }
-  });
+        setCartItems(cleaned);
+      } catch (err) {
+        console.error("Failed to fetch cart:", err.message);
+      }
+    });
 
-  return () => unsubscribe();
-}, []);
+    return () => unsubscribe();
+  }, []);
 
   const syncCartWithBackend = async (itemsToSync) => {
     const user = auth.currentUser;
@@ -42,9 +43,10 @@ export const CartProvider = ({ children }) => {
 
     const token = await user.getIdToken();
 
-    const cleanedItems = itemsToSync.map(item => ({
-      productId: typeof item.productId === "object" ? item.productId.id : item.productId,
-      quantity: item.quantity
+    const cleanedItems = itemsToSync.map((item) => ({
+      productId:
+        typeof item.productId === "object" ? item.productId.id : item.productId,
+      quantity: item.quantity,
     }));
 
     try {
@@ -52,9 +54,9 @@ export const CartProvider = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ items: cleanedItems })
+        body: JSON.stringify({ items: cleanedItems }),
       });
     } catch (err) {
       console.error("Failed to sync cart:", err.message);
@@ -62,9 +64,9 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToCart = (productId) => {
-    const existing = cartItems.find(item => item.productId === productId);
+    const existing = cartItems.find((item) => item.productId === productId);
     const updated = existing
-      ? cartItems.map(item =>
+      ? cartItems.map((item) =>
           item.productId === productId
             ? { ...item, quantity: item.quantity + 1 }
             : item
@@ -76,7 +78,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const increaseQuantity = (productId) => {
-    const updated = cartItems.map(item =>
+    const updated = cartItems.map((item) =>
       item.productId === productId
         ? { ...item, quantity: item.quantity + 1 }
         : item
@@ -87,40 +89,48 @@ export const CartProvider = ({ children }) => {
   };
 
   const decreaseQuantity = (productId) => {
-  const item = cartItems.find(item => item.productId === productId);
+    const item = cartItems.find((item) => item.productId === productId);
+    if (!item) return;
 
-  if (!item) return;
-
-  if (item.quantity === 1) {
-    const updated = cartItems.filter(item => item.productId !== productId);
-    setCartItems(updated);
-    syncCartWithBackend(updated);
-    toast.custom(() => (
-                    <div className="bg-yellow-100 text-yellow-800 p-3 rounded shadow">
-                      ⚠️ Item removed!
-                    </div>
-                  ));
-  } else {
-    const updated = cartItems.map(item =>
-      item.productId === productId
-        ? { ...item, quantity: item.quantity - 1 }
-        : item
-    );
-    setCartItems(updated);
-    syncCartWithBackend(updated);
-    toast.error("Item decreased");
-  }
-};
+    if (item.quantity === 1) {
+      const updated = cartItems.filter((item) => item.productId !== productId);
+      setCartItems(updated);
+      syncCartWithBackend(updated);
+      toast.custom(() => (
+        <div className="bg-yellow-100 text-yellow-800 p-3 rounded shadow">
+          ⚠️ Item removed!
+        </div>
+      ));
+    } else {
+      const updated = cartItems.map((item) =>
+        item.productId === productId
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      );
+      setCartItems(updated);
+      syncCartWithBackend(updated);
+      toast.error("Item decreased");
+    }
+  };
 
   const removeFromCart = (productId) => {
-  const updated = cartItems.filter(item => item.productId !== productId);
-  setCartItems(updated);
-  syncCartWithBackend(updated);
-};
+    const updated = cartItems.filter((item) => item.productId !== productId);
+    setCartItems(updated);
+    syncCartWithBackend(updated);
+  };
 
   const clearCart = () => {
     setCartItems([]);
     syncCartWithBackend([]);
+  };
+
+  // ✅ NEW FUNCTION: removes only purchased items
+  const removePurchasedItems = (purchasedIds) => {
+    const updated = cartItems.filter(
+      (item) => !purchasedIds.includes(item.productId)
+    );
+    setCartItems(updated);
+    syncCartWithBackend(updated);
   };
 
   return (
@@ -132,7 +142,8 @@ export const CartProvider = ({ children }) => {
         increaseQuantity,
         decreaseQuantity,
         removeFromCart,
-        clearCart
+        clearCart,
+        removePurchasedItems,
       }}
     >
       {children}

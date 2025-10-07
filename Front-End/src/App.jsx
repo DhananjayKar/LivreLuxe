@@ -8,7 +8,8 @@ import Admin from "./Components/Admin/Admin";
 import ErrorPage from "./Components/ErrorPage/ErrorPage";
 import Home from "./Pages/Home";
 import Category from "./Components/Category/Category";
-import Checkout from "./Pages/Checkout";
+import Address from "./Pages/Address";
+import Payment from "./Pages/Payment";
 import Developer from "./Pages/Developer";
 import Search from "./Components/Search/Search";
 import Categories from "./Pages/Categories";
@@ -27,8 +28,9 @@ function AppContent() {
   const isLoginPage = location.pathname === "/auth";
   const isTracking = useMatch("/track/:orderId");
   const isAdmin = useMatch("/admin");
-  const isPayment = useMatch("/checkout");
+  const isPayment = useMatch("/payment");
   const isSellItem = useMatch("/sell-item");
+  const isAddress = useMatch("/address");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,7 +58,7 @@ function AppContent() {
       <OrderProvider>
       <CartProvider>
         {location.pathname !== "/developer" && <Navbar />}
-        {!isLoginPage && !isAdmin && !isPayment && !isTracking && !isSellItem && location.pathname !== "/developer" && <Search />}
+        {!isLoginPage && !isAdmin && !isPayment && !isAddress && !isTracking && !isSellItem && location.pathname !== "/developer" && <Search />}
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -71,7 +73,8 @@ function AppContent() {
             <Route path="/no-orders" element={<ErrorPage code={204} message="No Orders" />} />
             <Route path="/auth" element={<Authentic />} />
             <Route path="/admin" element={<Admin />} />
-            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/address" element={<Address />} />
+            <Route path="/payment" element={<Payment />} />
             <Route path="*" element={<ErrorPage code={404} message="Page Not Found!" />} />
           </Routes>
         </main>

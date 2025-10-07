@@ -10,6 +10,8 @@ import banner1 from "../Components/Assets/banner1.jpg";
 import banner2 from "../Components/Assets/banner2.jpg";
 import banner3 from "../Components/Assets/banner3.jpg";
 import banner4 from "../Components/Assets/banner4.jpg";
+import banner5 from "../Components/Assets/banner5.png";
+import banner6 from "../Components/Assets/banner6.png";
 
 const allCategories = [
   "Fantasy & Fiction",
@@ -34,6 +36,8 @@ const carouselImages = [
   { url: banner2, promo: "" },
   { url: banner3, promo: "" },
   { url: banner4, promo: "" },
+  { url: banner5, promo: "" },
+  { url: banner6, promo: "" },
 ];
 
 export default function Home() {
@@ -82,7 +86,7 @@ const scroll = (direction) => {
                 <img
                   src={img.url}
                   alt={`slide-${idx}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-fill"
                 />
                 <div className="absolute inset-0 flex items-center justify-center text-center px-4">
                   <h2 className="text-white text-2xl md:text-4xl font-bold">
