@@ -7,6 +7,7 @@ import cart from "../Assets/cart.png";
 import userIcon from "../Assets/user.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from '../../Context/CartContext';
+import Swal from "sweetalert2";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -52,14 +53,53 @@ useEffect(() => {
 }, []);
 
 const handleLogout = async () => {
+  const result = await Swal.fire({
+    title: "Log out?",
+    text: "You’ll be signed out of LivreLuxe.",
+    icon: "question",
+    iconColor: "#d4af37",
+    showCancelButton: true,
+    confirmButtonText: "Log out",
+    cancelButtonText: "Cancel",
+    background: "#fdfcfb",
+    color: "#333",
+    confirmButtonColor: "#d4af37",
+    cancelButtonColor: "#b0b0b0",
+    reverseButtons: true,
+    customClass: {
+      popup: "small-popup",
+      title: "small-title",
+      confirmButton: "small-btn",
+      cancelButton: "small-btn",
+    },
+  });
+
+  if (result.isConfirmed) {
     try {
       await signOut(auth);
-      console.log("User logged out");
+      await Swal.fire({
+        title: "Signed out",
+        text: "You’ve been logged out successfully.",
+        icon: "success",
+        iconColor: "#d4af37",
+        timer: 1400,
+        showConfirmButton: false,
+        background: "#fdfcfb",
+        color: "#333",
+      });
       navigate("/");
     } catch (err) {
-      console.error("Logout error:", err.message);
+      Swal.fire({
+        title: "Error",
+        text: "Something went wrong while logging out.",
+        icon: "error",
+        iconColor: "#d4af37",
+        background: "#fdfcfb",
+        color: "#333",
+      });
     }
-  };
+  }
+};
 
 const { cartItems } = useCart();
 const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);

@@ -10,6 +10,7 @@ const authRoutes = require("./routes/auth");
 const reviewRoutes = require("./routes/reviews");
 const categoryRoutes = require('./routes/categoryRoutes');
 const userRoutes = require('./routes/user');
+const addressRoutes = require("./routes/addresses");
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use("/api/addresses", addressRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))

@@ -18,7 +18,8 @@ const OrderSchema = new mongoose.Schema({
   discount: Number,
   tax: Number,
   grandTotal: Number,
-  date: { type: String, default: () => new Date().toLocaleDateString() }
+  date: { type: Date, default: () => new Date() }, // timestamp for sorting & backend
+  dateString: { type: String, default: () => new Date().toLocaleDateString("en-GB") } // DD/MM/YYYY for display
 });
 
 module.exports = mongoose.model("Order", OrderSchema);
