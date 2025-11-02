@@ -13,7 +13,7 @@ const AddressSchema = new mongoose.Schema(
     mobile: { type: String, required: true },
     category: {
       type: String,
-      enum: ["home", "office", "other"],
+      enum: ["home", "shop", "office", "other"],
       default: "home",
     },
   },
