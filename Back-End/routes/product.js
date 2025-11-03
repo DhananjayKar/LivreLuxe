@@ -78,8 +78,8 @@ router.post("/", verifyToken, upload.single("image"), async (req, res) => {
     if (exists) {
       return res.status(409).json({ error: "Product ID already exists." });
     }
-
-    const imageUrl = `${req.protocol}://${req.get("host")}/api/products/uploads/${req.file.filename}`;
+    const protocol = (req.headers["x-forwarded-proto"] || req.protocol) === "https" ? "https" : "https";
+    const imageUrl = `${protocol}://${req.get("host")}/api/products/uploads/${req.file.filename}`;
 
     const newProduct = new Product({
       id,
