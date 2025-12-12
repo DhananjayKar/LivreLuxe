@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../Pages/Authentic/firebaseConfig";
 import { useNavigate } from "react-router-dom";
+import { uploadImageToSupabase } from "../Utils/uploadImage";
 
 const generateCustomId = () => {
   const letters = "abcdefghijklmnopqrstuvwxyz";
@@ -18,6 +19,7 @@ export default function SellItem() {
   const [oldPrice, setOldPrice] = useState("");
   const [author, setAuthor] = useState("");
   const [image, setImage] = useState(null);
+
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [addingCategory, setAddingCategory] = useState(false);
@@ -26,6 +28,7 @@ export default function SellItem() {
   const [user] = useAuthState(auth);
   const navigate = useNavigate();
 
+  // Load categories on mount
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -42,8 +45,11 @@ export default function SellItem() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) return toast.error("You must be logged in!");
-  
+
+    if (!image) return toast.error("Please upload an image");
+
     try {
+      // 1️⃣ If adding category
       if (addingCategory) {
         const catRes = await fetch(`${import.meta.env.VITE_API_URL}/api/categories`, {
           method: "POST",
@@ -53,40 +59,53 @@ export default function SellItem() {
           },
           body: JSON.stringify({ name: newCategory.trim() }),
         });
-  
+
         if (!catRes.ok) {
           const errorData = await catRes.json();
-          toast.error(errorData.error || "Failed to create new category");
+          toast.error(errorData.error || "Failed to create category");
           return;
         }
-  
+
         toast.success("New category added!");
       }
-  
+
       toast.loading("Uploading image...");
-  
-      const formData = new FormData();
-      formData.append("name", name.trim());
-      formData.append("newPrice", newPrice);
-      if (oldPrice) formData.append("oldPrice", oldPrice);
-      if (author) formData.append("author", author.trim());
-      formData.append("category", addingCategory ? newCategory.trim() : category.trim());
-      formData.append("image", image);
-      formData.append("id", generateCustomId());
-  
+
+      // 2️⃣ Upload image to Supabase
+      const uploaded = await uploadImageToSupabase(image);
+
+      toast.dismiss();
+      toast.loading("Saving product...");
+
+      // 3️⃣ Build product data
+      const formData = {
+        id: generateCustomId(),
+        name: name.trim(),
+        newPrice,
+        oldPrice,
+        author: author.trim(),
+        category: addingCategory ? newCategory.trim() : category.trim(),
+        imageUrl: uploaded.url,
+        imageFilename: uploaded.filename,
+      };
+
+      // 4️⃣ Send metadata to backend (MongoDB)
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${await user.getIdToken()}`,
         },
-        body: formData,
+        body: JSON.stringify(formData),
       });
-  
+
       if (!res.ok) throw new Error("Failed to add product");
-  
+
       const savedId = await res.json();
+
       toast.success("Product listed successfully!");
       navigate(`/book/${savedId.id}`);
+
     } catch (err) {
       toast.error(err.message || "Something went wrong");
     } finally {
@@ -113,18 +132,13 @@ export default function SellItem() {
     <div className="max-w-xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Sell an Item</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
+
         <input value={name} onChange={(e) => setName(e.target.value)} required placeholder="Book/Item Name" className="w-full p-2 border rounded" />
         <input value={newPrice} onChange={(e) => setNewPrice(e.target.value)} required type="number" placeholder="New Price" className="w-full p-2 border rounded" />
         <input value={oldPrice} onChange={(e) => setOldPrice(e.target.value)} type="number" placeholder="Old Price (optional)" className="w-full p-2 border rounded" />
         <input value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="Author (optional)" className="w-full p-2 border rounded" />
 
-        <label
-          htmlFor="image"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 transition"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12V4m0 8l-3-3m3 3l3-3" />
-          </svg>
+        <label htmlFor="image" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 transition">
           Upload Cover Image
         </label>
         <input
@@ -134,16 +148,16 @@ export default function SellItem() {
           onChange={(e) => setImage(e.target.files[0])}
           style={{ display: "none" }}
         />
-        
+
         {image && (
-          <p style={{ marginTop: "8px", fontSize: "14px", color: "#333" }}>
+          <p className="mt-2 text-sm text-gray-700">
             Selected: <strong>{image.name}</strong>
           </p>
         )}
 
         <div>
           <label className="block font-medium mb-1">Category</label>
-        
+
           <AnimatePresence mode="wait">
             {!addingCategory ? (
               <motion.select
@@ -192,7 +206,7 @@ export default function SellItem() {
                   whileTap={{ scale: 0.95 }}
                   className="ml-auto mt-2 px-4 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 block w-fit text-sm shadow"
                 >
-                  ✖ Cancel 
+                  ✖ Cancel
                 </motion.button>
               </motion.div>
             )}

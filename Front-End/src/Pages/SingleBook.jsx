@@ -186,12 +186,12 @@ const SingleBook = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-6">
+    <div className="flex flex-col items-center p-6 rounded-xl">
       {/* Product Image */}
       <img
         src={currentProduct.image}
         alt={currentProduct.name}
-        className="w-64 h-85 object-cover mb-6 cursor-pointer"
+        className="w-64 h-85 object-cover mb-6 cursor-pointer rounded-xl"
         onClick={() => setIsPopupOpen(true)}
       />
 
@@ -322,21 +322,25 @@ const SingleBook = () => {
 
       {/* Similar Products */}
       {similarProducts.length > 0 && (
-        <div className="mt-10">
+        <div className="mt-10 w-full">
           <h2 className="text-xl font-semibold mb-4">Similar Books/Items</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+
+          {/* HORIZONTAL SCROLL ROW */}
+          <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-hide">
             {similarProducts.map((book) => (
               <div
                 key={book.id}
-                className="cursor-pointer border rounded-xl p-3 bg-white hover:shadow-xl hover:scale-105 transition duration-300 ease-in-out"
+                className="cursor-pointer border rounded-xl p-3 bg-white
+                          min-w-[130px] max-w-[130px] h-56
+                          hover:shadow-xl hover:scale-105 transition duration-300 ease-in-out"
                 onClick={() => navigate(`/book/${book.id}`)}
               >
                 <img
                   src={book.image}
                   alt={book.name}
-                  className="w-full h-70 object-cover rounded"
+                  className="w-full h-40 object-cover rounded"
                 />
-                <p className="mt-2 text-center font-medium truncate">{book.name}</p>
+                <p className="mt-2 text-center font-medium text-sm truncate">{book.name}</p>
               </div>
             ))}
           </div>

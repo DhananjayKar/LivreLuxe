@@ -10,8 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.86.0",
     "axios": "^1.10.0",
-    "firebase": "^11.6.1",
+    "firebase": "^11.10.0",
     "framer-motion": "^12.23.22",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
