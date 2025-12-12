@@ -58,7 +58,7 @@ router.put("/:id", verifyToken, async (req, res) => {
 });
 
 // POST new product (with multer and auth)
-router.post("/", verifyToken, upload.single("image"), async (req, res) => {
+router.post("/", verifyToken, async (req, res) => {
   try {
     const {
       id,
@@ -67,36 +67,31 @@ router.post("/", verifyToken, upload.single("image"), async (req, res) => {
       oldPrice,
       author,
       category,
+      imageUrl,
+      imageFilename,
     } = req.body;
 
-    if (!id || !name || !newPrice || !category || !req.file) {
-      return res.status(400).json({ error: "Missing required fields." });
+    if (!imageUrl || !imageFilename) {
+      return res.status(400).json({ error: "Image URL or filename missing" });
     }
 
-    // Check for existing ID
-    const exists = await Product.findOne({ id });
-    if (exists) {
-      return res.status(409).json({ error: "Product ID already exists." });
-    }
-    const protocol = (req.headers["x-forwarded-proto"] || req.protocol) === "https" ? "https" : "https";
-    const filename = req.file.filename.replace(/\s+/g, '_').replace(/[()#,+]/g, '');
-    const imageUrl = `${protocol}://${req.get("host")}/api/products/uploads/${filename}`;
-
-    const newProduct = new Product({
+    const product = new Product({
       id,
       name,
       newPrice,
-      oldPrice: oldPrice || undefined,
-      author: author || undefined,
+      oldPrice,
+      author,
       category,
       image: imageUrl,
+      user: req.user.uid,
     });
 
-    const saved = await newProduct.save();
-    res.status(201).json(saved);
+    await product.save();
+
+    res.json({ id: product.id });
   } catch (err) {
-    console.error("Product add error:", err.message);
-    res.status(500).json({ error: "Failed to add product." });
+    console.error(err);
+    res.status(500).json({ error: "Failed to add product" });
   }
 });
 
